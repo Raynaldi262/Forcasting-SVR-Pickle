@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head> 
+	<link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
+	<script src="http://code.highcharts.com/highcharts.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+	<script src="../static/graph.js"></script>
+
+
+	<style type="text/css">
+		table tr,
+			table td,
+				table th {
+			  margin: 0;
+			  padding: 1.5px;
+			 text-align: center;
+			 font-size: 13px;
+		}
+		body { 
+			width: 100%;
+			height:100%;
+			font-family: 'Open Sans', sans-serif;
+			background: #fff;
+			color: #000;
+			font-size: 13px;
+			text-align:center;
+			letter-spacing:1.2px;	
+		}
+		#hilang{
+			  display: none;
+			  width: 100%;
+			  padding: 50px 0;
+			  text-align: center;
+			  background-color: lightblue;
+			  margin-top: 20px;
+		}
+	</style>
+
+</head>
+<body>
+
+	<header>
+		<div class="container"> 
+		<h2>Prediksi Harga Minyak Bumi Menggunakan SVR</h2>
+	</div>
+	</header>
+	<form action="{{ url_for('predicted')}}" method="POST">
+	<table align="center" border="0" bordercolor="black">
+        <tr>
+            <td>Dari Tanggal</td>
+            <td><input type="date" id="fix" name="fix"
+				       value="2019-10-01" disabled>
+			  <input type="hidden" id="start" name="start" value="2019-10-01"></td>
+			 <td>Sampai Tanggal</td>
+            <td><input type="date" id="end" name="end"
+				       value="2019-10-02"
+				       min="2019-10-02" max="2020-03-31"></td>
+			<td><input type="submit" value="Prediksi" class="btn-info"></td>
+        </tr> 
+    </table>
+    </form>
+		<div id={{ chartID|safe }} class="chart"></div>
+		<script> 
+			var chart_id = {{ chartID|safe }}
+			var series = {{ series|safe }}
+			var title = {{ title|safe }}
+			var xAxis = {{ xAxis|safe }}
+			var yAxis = {{ yAxis|safe }}
+			var chart = {{ chart|safe }}
+
+		</script>
+	<div id=muncul> 	
+	<button onclick="show()">Tampilkan Tabel</button>
+	</div>
+	<div id="hilang">
+	<center>
+	<button onclick="hide()">Sembunyikan Tabel</button>
+		<h1>Tabel Harga Minyak Bumi</h1>
+	</center> 
+	<div class="container">
+		<table class="table table-striped table-bordered data">
+			<thead class="thead-dark">
+				<tr>			
+					<th>Date</th>
+					<th>Price</th>
+				</tr>
+			</thead>
+			<tbody id= "tdata" style="color: black">
+
+			</tbody>
+		</table> 
+	</div>
+	</div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.data').DataTable();
+
+	});
+	console.log ({{len|safe}}); 
+
+	createT({{date|safe}},{{price|safe}},{{len|safe}})
+	function createT(date,price,len){
+		var table = document.getElementById('tdata')
+		for(var i = 0;i<{{len|safe}};i++){
+				var row ='<tr><td>'+date[i]+'</td><td>'+'$'+price[i]+'</td></tr>'
+			table.innerHTML +=row
+		}
+	}
+
+	function show() {
+	  var x = document.getElementById("hilang");
+	   var y = document.getElementById("muncul");
+
+	    x.style.display = "block";
+	    y.style.display = "none";
+	}
+
+	function hide() {
+	  var x = document.getElementById("hilang");
+	   var y = document.getElementById("muncul");
+	    x.style.display = "none";
+	    y.style.display = "block";
+	}
+
+</script>
+</html> 
